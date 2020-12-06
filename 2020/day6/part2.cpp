@@ -21,8 +21,8 @@ int main(int argc, char **argv) {
 
   long sum = transform_reduce(input.begin(), input.end(), 0, plus<>(), [](auto &group) {
     unsigned int groupresult = transform_reduce(group.cbegin(), group.cend(), ~0, bit_and<>(), [](const auto &person) {
-      return ~transform_reduce(person.cbegin(), person.cend(), ~0, bit_and<>(),
-                               [](char c) -> unsigned int { return ~(1 << (c - 'a')); });
+      return transform_reduce(person.cbegin(), person.cend(), 0, bit_or<>(),
+                               [](char c) -> unsigned int { return (1 << (c - 'a')); });
     });
     return popcount(groupresult);
   });
