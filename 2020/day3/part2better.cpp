@@ -17,14 +17,8 @@ int main(int argc, char **argv) {
 
   auto countTrees = [&](int hDiff, int vDiff) -> long {
     long hIndex = 0, vIndex = 1;
-    return accumulate(next(values.cbegin()), values.cend(), 0, [&](long a, const auto &line) {
-      if (vIndex % vDiff == 0) {
-        ++vIndex;
-        hIndex += hDiff;
-        return a + long((line[hIndex % line.size()] == '#'));
-      }
-      ++vIndex;
-      return a;
+    return count_if(next(values.cbegin()), values.cend(), [&](const auto &line) {
+      return (vIndex++ % vDiff == 0) && (hIndex += hDiff) && (line[hIndex % line.size()] == '#');
     });
   };
 
