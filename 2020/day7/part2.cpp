@@ -21,8 +21,8 @@ int main(int argc, char **argv) {
   bagsToMatch.push(pair(string("shiny gold"), 1));
   int sum = 0;
   while (!bagsToMatch.empty()) {
-    int times = bagsToMatch.top().second;
-    regex r(bagsToMatch.top().first + R"raw( bags contain (no other bags\.|(.*)\.))raw");
+    auto [color, times] = bagsToMatch.top();
+    regex r(color + R"raw( bags contain (no other bags\.|(.*)\.))raw");
     bagsToMatch.pop();
     for (auto &rule : input) {
       smatch match;
@@ -32,8 +32,7 @@ int main(int argc, char **argv) {
         smatch match2;
         while (regex_search(containing, match2, r1)) {
           int numBags;
-          string number = match2[1].str();
-          from_chars(number.data(), number.data() + number.size(), numBags);
+          from_chars(&*match2[1].first, &*match2[1].second, numBags);
           sum += numBags * times;
           bagsToMatch.push(pair(match2[2].str(), numBags * times));
 		  containing = match2.suffix();

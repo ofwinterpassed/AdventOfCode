@@ -5,3 +5,4 @@ if compiler.get_id() == 'gcc'
 endif
 executable('part1', 'part1.cpp')
 executable('part2', 'part2.cpp')
+executable('part2better', 'part2better.cpp')
