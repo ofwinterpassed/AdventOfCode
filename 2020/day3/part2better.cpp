@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <numeric>
+#include <tuple>
 #include <vector>
 
 using namespace std;
@@ -16,10 +17,15 @@ int main(int argc, char **argv) {
   }
 
   auto countTrees = [&](int hDiff, int vDiff) -> long {
-    long hIndex = 0, vIndex = 1;
-    return count_if(next(values.cbegin()), values.cend(), [&](const auto &line) {
-      return (vIndex++ % vDiff == 0) && (hIndex += hDiff) && (line[hIndex % line.size()] == '#');
-    });
+    return get<2>(accumulate(next(values.cbegin()), values.cend(), tuple{0, 1, 0},
+                             [=](auto acc, const auto &line) {
+                               auto &[hIndex, vIndex, sum] = acc;
+                               if (vIndex++ % vDiff == 0) {
+                                 hIndex += hDiff;
+                                 sum += line[hIndex % line.size()] == '#';
+                               }
+                               return acc;
+                             }));
   };
 
   long numTrees = countTrees(1, 1) * countTrees(3, 1) * countTrees(5, 1) * countTrees(7, 1) * countTrees(1, 2);
