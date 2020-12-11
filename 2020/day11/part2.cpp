@@ -39,14 +39,10 @@ int main(int argc, char **argv) {
   };
   auto countTaken = [&](auto row, auto column) {
     int taken = 0;
-    taken += findInDir(row, column, -1, -1);
-    taken += findInDir(row, column, 0, -1);
-    taken += findInDir(row, column, 1, -1);
-    taken += findInDir(row, column, -1, 0);
-    taken += findInDir(row, column, 1, 0);
-    taken += findInDir(row, column, -1, 1);
-    taken += findInDir(row, column, 0, 1);
-    taken += findInDir(row, column, 1, 1);
+	array<pair<int, int>, 8> dirs{{{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}}};
+    for (auto [rd, cd] : dirs) {
+      taken += findInDir(row, column, rd, cd);
+    }
     return taken;
   };
 
