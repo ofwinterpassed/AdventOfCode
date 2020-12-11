@@ -11,10 +11,6 @@
 
 using namespace std;
 
-long accumulator = 0;
-
-enum class instruction_t : char { acc, jmp, nop };
-
 int main(int argc, char **argv) {
 
   vector<string> input;
