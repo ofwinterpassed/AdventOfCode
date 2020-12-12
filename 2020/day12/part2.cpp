@@ -5,6 +5,7 @@
 #include <complex>
 #include <fstream>
 #include <iostream>
+#include <numbers>
 #include <numeric>
 #include <regex>
 #include <stack>
@@ -21,36 +22,16 @@ int main(int argc, char **argv) {
   for (string line; getline(cin, line);) {
     int val;
     from_chars(line.data() + 1, line.data() + line.size(), val);
-	float value = static_cast<float>(val);
+    float value = static_cast<float>(val);
     switch (line[0]) {
     case 'F': {
       pos += value * dir;
     } break;
     case 'R': {
-      switch (val) {
-      default:
-        assert(false);
-        break;
-      case 90:
-        dir *= complex<float>{0, 1};
-      case 180:
-        dir *= complex<float>{0, 1};
-      case 270:
-        dir *= complex<float>{0, 1};
-      }
+      dir *= polar(1.f, -value * numbers::pi_v<float> / 180.f);
     } break;
     case 'L': {
-      switch (val) {
-      default:
-        assert(false);
-        break;
-      case 90:
-        dir *= complex<float>{0, -1};
-      case 180:
-        dir *= complex<float>{0, -1};
-      case 270:
-        dir *= complex<float>{0, -1};
-      }
+      dir *= polar(1.f, value * numbers::pi_v<float> / 180.f);
     } break;
     case 'E': {
       dir += value;
