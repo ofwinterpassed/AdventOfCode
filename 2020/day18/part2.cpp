@@ -31,14 +31,14 @@ int main(int argc, char** argv) {
   for (string line; getline(cin, line);) {
     line.erase(remove(line.begin(), line.end(), ' '), line.end());
     stack<pair<long, char>> result;
-    result.push(pair(0l, '+'));
+    result.emplace(0l, '+');
 
     for (size_t index = 0; index < line.size(); ++index) {
       char token = line[index];
       switch (token) {
       case '(': {
-        result.push(pair(0l, '('));
-        result.push(pair(0l, '+'));
+        result.emplace(0l, '(');
+        result.emplace(0l, '+');
       } break;
       case ')': {
         while (result.top().second != '(')
@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
         break;
       case '*':
         result.top().second = token;
-        result.push(pair(0l, '+'));
+        result.emplace(0l, '+');
         break;
       default:
         apply(result.top().second, result.top().first, token - '0');

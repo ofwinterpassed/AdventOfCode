@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     int x = 0;
     for (auto c : line) {
       if (c == '#')
-        cells.emplace_back(x, y, 0, 0);
+        cells.push_back(cell{x, y, 0, 0});
       ++x;
     }
   }
@@ -32,12 +32,12 @@ int main(int argc, char** argv) {
       for (int ii = oldcell.x - 1; ii < oldcell.x + 2; ++ii)
         for (int jj = oldcell.y - 1; jj < oldcell.y + 2; ++jj)
           for (int kk = oldcell.z - 1; kk < oldcell.z + 2; ++kk)
-          for (int ll = oldcell.w - 1; ll < oldcell.w + 2; ++ll) {
-            auto& [c, n] = *newcells.try_emplace(cell{ii, jj, kk, ll}, pair(0, false)).first;
-            ++n.first;
-            if ((ii == oldcell.x && jj == oldcell.y && kk == oldcell.z && ll == oldcell.w))
-              n.second = true;
-          }
+            for (int ll = oldcell.w - 1; ll < oldcell.w + 2; ++ll) {
+              auto& [c, n] = *newcells.try_emplace(cell{ii, jj, kk, ll}, pair(0, false)).first;
+              ++n.first;
+              if ((ii == oldcell.x && jj == oldcell.y && kk == oldcell.z && ll == oldcell.w))
+                n.second = true;
+            }
     }
     auto livecells = cells.size();
     cout << livecells << '\n';

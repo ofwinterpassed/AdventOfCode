@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     int x = 0;
     for (auto c : line) {
       if (c == '#')
-        cells.emplace_back(x, y, 0);
+        cells.push_back(cell{x, y, 0});
       ++x;
     }
   }
