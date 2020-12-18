@@ -1,44 +1,38 @@
 #include <charconv>
 #include <iostream>
-#include <map>
 #include <ranges>
 #include <string>
+#include <vector>
 
 using namespace std;
 using namespace std::ranges::views;
 
 int main(int argc, char** argv) {
 
-  long index = 0;
-  map<long, pair<long, long>> numbers;
-  string line;
-  getline(cin, line);
+  string line("11,18,0,20,1,7,16");
 
-  long lastVal = 0;
-  for (auto a : line | split(',') | ranges::views::transform([&lastVal](auto&& rng) {
-                  from_chars(&*rng.begin(), &*rng.begin() + distance(rng.begin(), rng.end()), lastVal);
-                  return lastVal;
-                })) {
-    numbers[a] = pair(index, 0l);
+  int index = 0;
+  vector<int> numbers(30000000, -1);
+
+  int lastVal = 0;
+  int nextVal = 0;
+  for (size_t lastEnd = 0, start = 0, end = line.find(','); lastEnd != string::npos;
+       start = (lastEnd = exchange(end, line.find(',',  end + 1))) + 1) {
+    from_chars(line.data() + start, line.data() + min(end, line.size()), lastVal);
+    numbers[lastVal] = index;
     ++index;
   }
+    nextVal = 0;
 
-  auto last = numbers.find(lastVal);
-  while (index < 30000000) {
-    if (last == numbers.end()) {
-      lastVal = 0;
+  for (; index < 30000000 - 1; ++index) {
+    auto& last = numbers[nextVal];
+    if (last == -1) {
+      last = index;
+      nextVal = 0;
     } else {
-      lastVal = last->second.second;
+      nextVal = index - exchange(last, index);
     }
-    last = numbers.find(lastVal);
-    if (last == numbers.end()) {
-      last = numbers.insert(pair(lastVal, pair(index, 0l))).first;
-    } else {
-      last->second.second = index - last->second.first;
-      last->second.first = index;
-    }
-    ++index;
   }
 
-  cout << lastVal << '\n';
+  cout << nextVal << '\n';
 }

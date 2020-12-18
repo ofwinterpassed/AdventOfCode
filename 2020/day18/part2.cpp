@@ -19,20 +19,21 @@ void apply(char op, long& res, long val) {
     break;
   }
 }
+void popapply(stack<pair<long, char>>& result) {
+  auto r = result.top().first;
+  result.pop();
+  apply(result.top().second, result.top().first, r);
+}
 
 int main(int argc, char** argv) {
 
   long sum = 0;
   for (string line; getline(cin, line);) {
+    line.erase(remove(line.begin(), line.end(), ' '), line.end());
     stack<pair<long, char>> result;
     result.push(pair(0l, '+'));
 
     for (size_t index = 0; index < line.size(); ++index) {
-      index = line.find_first_of("+*()1234567890", index);
-      if (index == string::npos) {
-        --index;
-        break;
-      }
       char token = line[index];
       switch (token) {
       case '(': {
@@ -40,23 +41,15 @@ int main(int argc, char** argv) {
         result.push(pair(0l, '+'));
       } break;
       case ')': {
-        auto r = result.top().first;
-        result.pop();
-        while (result.top().second != '(') {
-          apply(result.top().second, result.top().first, r);
-          r = result.top().first;
-          result.pop();
-        }
-        apply(result.top().second, result.top().first, r);
-        r = result.top().first;
-        result.pop();
-        apply(result.top().second, result.top().first, r);
+        while (result.top().second != '(')
+          popapply(result);
+        popapply(result);
       } break;
       case '+':
         result.top().second = token;
         break;
       case '*':
-		result.top().second = token;
+        result.top().second = token;
         result.push(pair(0l, '+'));
         break;
       default:
@@ -64,11 +57,8 @@ int main(int argc, char** argv) {
         break;
       }
     }
-    while (result.size() > 1) {
-      auto r = result.top().first;
-      result.pop();
-      apply(result.top().second, result.top().first, r);
-    }
+    while (result.size() > 1)
+      popapply(result);
 
     sum += result.top().first;
   }
