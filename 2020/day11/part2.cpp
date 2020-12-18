@@ -73,12 +73,12 @@ int main(int argc, char **argv) {
       }
     }
     input = cp;
-    for (auto &&line : input)
-      clog << line << '\n';
-    clog << endl;
+//    for (auto &&line : input)
+//      clog << line << '\n';
+//    clog << endl;
   }
-  for (auto &&line : input)
-    clog << line << '\n';
+//  for (auto &&line : input)
+//    clog << line << '\n';
   cout << transform_reduce(cp.begin(), cp.end(), 0, plus<>(), [](auto &&line) {
     return count(line.begin(), line.end(), '#');
   }) << '\n';

@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
     for (auto& ins : input) {
       get<2>(ins) = false;
     }
-    cout << instructionToChange << '\n' << accumulator << '\n';
+//    cout << instructionToChange << '\n' << accumulator << '\n';
   }
 
   cout << accumulator << " " << (success ? "true" : "false") << '\n';

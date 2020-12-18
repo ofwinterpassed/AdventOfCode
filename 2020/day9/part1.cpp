@@ -23,12 +23,12 @@ int main(int argc, char **argv) {
   auto iter = next(input.begin(), 25);
   while (iter != input.end()) {
     bool found = false;
-      cout << *iter << endl;
+  //    cout << *iter << endl;
     for (auto iter2 = prev(input.begin(), 25); iter2 != iter && !found; ++iter2) {
       found = find_if(next(iter2), iter, [=](auto val) { return (val + *iter2) == *iter; }) != iter;
     }
     if (!found) {
-      cout << *iter << '\n';
+ //     cout << *iter << '\n';
       break;
     }
 	++iter;
