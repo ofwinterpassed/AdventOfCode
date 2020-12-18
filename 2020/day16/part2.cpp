@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 using namespace std;
@@ -18,6 +19,15 @@ vector<int> ticket(string line) {
     ret.emplace_back(val);
   }
   return ret;
+}
+
+template <unsigned... ints>
+long long product(unsigned mask, vector<int>& ticket, std::integer_sequence<unsigned, ints...>) {
+  return (1l * ... * ((mask >> ints) % 2 ? ticket[ints] : 1u));
+}
+
+template <unsigned... ints> unsigned maskor(const vector<tuple<string, int, int, int, int, unsigned>>& valid_ranges, integer_sequence<unsigned, ints...>) {
+  return (get<unsigned>(valid_ranges[ints]) | ...) & 0xfffff;
 }
 
 int main(int argc, char** argv) {
@@ -86,18 +96,8 @@ int main(int argc, char** argv) {
     }
   }
 
-  long long prod = 1;
-  unsigned mask = 0;
-  for (size_t a = 0; a < 6; ++a) {
-    auto thismask = get<unsigned>(valid_ranges[a]) & 0xfffff;
-    mask |= thismask;
-  }
-  for (int a = 0; a < 20; ++a) {
-    if (mask % 2 == 1) {
-      prod *= myticket[a];
-    }
-    mask >>= 1;
-  }
+  unsigned mask = maskor(valid_ranges, make_integer_sequence<unsigned, 6>{});
+  long long prod = product(mask, myticket, make_integer_sequence<unsigned, 20>{});
 
   cout << prod << '\n';
 }
