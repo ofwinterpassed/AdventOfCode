@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
     if (currentIter == numbers.end())
       currentIter = numbers.begin();
   }
-  auto oneIter = find(numbers.begin(), numbers.end(), 1);
+  auto oneIter = map[1];
   auto next1 = next(oneIter);
   if (next1 == numbers.end())
     next1 = numbers.begin();
