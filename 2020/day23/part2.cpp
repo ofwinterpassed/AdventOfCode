@@ -8,59 +8,68 @@
 
 using namespace std;
 
+struct node {
+  int prev, next;
+};
+template <int N> struct mylist {
+  using value_type = node;
+  mylist() : store{N} {
+    store[0].prev = store[0].next = 0;
+  }
+  void insert(int c) {
+    auto& n = store[c] = {store[0].prev, 0};
+    store[n.prev].next = c;
+    store[n.next].prev = c;
+  }
+  vector<node> store;
+};
+
 int main(int argc, char** argv) {
 
-  list<int> numbers;
   string line;
   getline(cin, line);
-  transform(line.begin(), line.end(), inserter(numbers, numbers.begin()), [](char c) { return c - '0'; });
-  vector<list<int>::iterator> map(1000000);
-  auto it = numbers.begin();
-  for (; it != numbers.end(); ++it)
-    map[*it] = it;
-  --it;
-
-  for (int i = 10; i < 1000001; ++i) {
-    numbers.push_back(i);
-    map[i] = ++it;
+  mylist<1000000> numbers;
+  for (int a = 0; a < line.size(); ++a) {
+    int i = line[a] - '0' - 1;
+    numbers.insert(i);
   }
 
-  auto currentIter = numbers.begin();
+  for (int i = 9; i < 1000000; ++i) {
+    numbers.store[i] = {i - 1, i + 1};
+  }
+  numbers.store[0].prev = 999999;
+  numbers.store[5].next = 9;
+  numbers.store[9].prev = 5;
+  numbers.store[999999].next = 0;
+
+  int currentval = 0;
   for (int i = 0; i < 10000000; ++i) {
-    auto next1 = next(currentIter);
-    if (next1 == numbers.end())
-      next1 = numbers.begin();
-    auto next2 = next(next1);
-    if (next2 == numbers.end())
-      next2 = numbers.begin();
-    auto next3 = next(next2);
-    if (next3 == numbers.end())
-      next3 = numbers.begin();
-    int destination = *currentIter - 1;
-    if (destination == 0)
-      destination = 1000000;
-    while ((destination == *next1) || (destination == *next2) || (destination == *next3)) {
+	int next1val = numbers.store[currentval].next;
+    node* next1 = &numbers.store[next1val];
+	int next2val = next1->next;
+    node* next2 = &numbers.store[next2val];
+	int next3val = next2->next;
+    node* next3 = &numbers.store[next3val];
+    int destination = currentval - 1;
+    if (destination == -1)
+      destination = 999999;
+    while ((destination == next1val) || (destination == next2val) || (destination == next3val)) {
       destination = destination - 1;
-      if (destination == 0)
-        destination = 1000000;
+      if (destination == -1)
+        destination = 999999;
     }
-    auto destIter = map[destination];
-    numbers.splice(++destIter, numbers, next1, next(next1));
-    numbers.splice(destIter, numbers, next2, next(next2));
-    numbers.splice(destIter, numbers, next3, next(next3));
-    ++currentIter;
-    if (currentIter == numbers.end())
-      currentIter = numbers.begin();
+    numbers.store[next1->prev].next = next3->next;
+    numbers.store[next3->next].prev = exchange(next1->prev, destination);
+    int destafter = exchange(numbers.store[destination].next, next1val);
+    next3->next = destafter;
+    numbers.store[destafter].prev = next3val;
+    currentval = numbers.store[currentval].next;
   }
-  auto oneIter = map[1];
-  auto next1 = next(oneIter);
-  if (next1 == numbers.end())
-    next1 = numbers.begin();
-  auto next2 = next(next1);
-  if (next2 == numbers.end())
-    next2 = numbers.begin();
+  node* oneIter = &numbers.store[0];
+  int next1 = oneIter->next;
+  int next2 = numbers.store[oneIter->next].next;
 
-  cout << long(*next1) * long(*next2) << '\n';
+  cout << long(next1 + 1) * long(next2 + 1) << '\n';
 
   return 0;
 }
